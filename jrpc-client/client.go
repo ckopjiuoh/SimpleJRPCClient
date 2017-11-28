@@ -10,8 +10,10 @@ import (
 
 	"github.com/motemen/go-loghttp"
 	"github.com/motemen/go-nuts/roundtime"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
+
+var Log *logrus.Logger
 
 type contextKey struct {
 	name string
@@ -20,15 +22,25 @@ type contextKey struct {
 var ContextKeyRequestStart = &contextKey{"RequestStart"}
 
 var RPCLogRequest = func(req *http.Request) {
-	log.Info("--> %s %s %s", req.Method, req.URL, req.Body)
+	 go logrus.WithFields(logrus.Fields{
+			 "method": req.Method,
+			 "url":    req.URL.Host})
+
 }
 
 var RPCLogResponse = func(resp *http.Response) {
 	ctx := resp.Request.Context()
 	if start, ok := ctx.Value(ContextKeyRequestStart).(time.Time); ok {
-		log.Info("<-- %d %s (%s)", resp.StatusCode, resp.Request.URL, roundtime.Duration(time.Now().Sub(start), 2))
+		Log.WithFields(logrus.Fields{
+			"Status": resp.StatusCode,
+			"url":    resp.Request.URL.Host,
+			"time": roundtime.Duration(time.Now().Sub(start), 1)}).Info("RPC Response ")
+
 	} else {
-		log.Info("<-- %d %s", resp.StatusCode, resp.Request.URL)
+		Log.WithFields(logrus.Fields{
+			"Status": resp.StatusCode,
+			"url":    resp.Request.URL.Host,
+		}).Info("RPC Response ")
 	}
 }
 
@@ -58,22 +70,25 @@ func (c JRPCClient) Call(method string, params interface{}) (*RPCResponse, error
 		Params:  params,
 		ID:      1,
 	})
-	resp, err := client.Post(c.Addr, "application/json; charset=utf-8", b)
+	resp, err := client.Post(c.Addr, "application/json", b)
 	if err != nil {
-		log.Println(err.Error())
+		Log.Error(err.Error())
 	}
 	defer resp.Body.Close()
 	r := new(RPCResponse)
 	err = json.NewDecoder(resp.Body).Decode(&r)
 	if err != nil {
-		log.Error("error decoding response: %v", err)
+		Log.Error("error decoding response: %v", err)
 		if e, ok := err.(*json.SyntaxError); ok {
-			log.Error("syntax error at byte offset %d", e.Offset)
+			Log.Error("syntax error at byte offset %d", e.Offset)
 		}
-		log.Error("RPC response: %q", r)
+		Log.Error("RPC response: %q", r)
 		return nil, errors.New("Not a RPC Response!")
 	}
-	log.Info(r)
+	Log.WithFields(logrus.Fields{
+		"Result": r.Result,
+		"Error":    r.Error,
+	}).Info("RPC Response info")
 	return r, nil
 }
 
@@ -87,7 +102,7 @@ type RPCRequest struct {
 type RPCResponse struct {
 	JSONRPC string      `json:"jsonrpc"`
 	Result  interface{} `json:"result"`
-	Error   RPCError    `json:"error"`
+	Error   *RPCError   `json:"error"`
 	ID      int         `json:"id"`
 }
 
