@@ -10,6 +10,23 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/gopherjs/gopherjs/js",
+			"repository": "https://github.com/gopherjs/gopherjs",
+			"vcs": "git",
+			"revision": "444abdf920945de5d4a977b572bcc6c674d1e4eb",
+			"branch": "master",
+			"path": "/js",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/jtolds/gls",
+			"repository": "https://github.com/jtolds/gls",
+			"vcs": "git",
+			"revision": "77f18212c9c7edc9bd6a33d383a7b545ce62f064",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/motemen/go-loghttp",
 			"repository": "https://github.com/motemen/go-loghttp",
 			"vcs": "git",
@@ -31,6 +48,30 @@
 			"repository": "https://github.com/sirupsen/logrus",
 			"vcs": "git",
 			"revision": "95cd2b9c79aa5e72ab0bc69b7ccc2be15bf850f6",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/smartystreets/assertions",
+			"repository": "https://github.com/smartystreets/assertions",
+			"vcs": "git",
+			"revision": "0b37b35ec7434b77e77a4bb29b79677cced992ea",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/smartystreets/goconvey",
+			"repository": "https://github.com/smartystreets/goconvey",
+			"vcs": "git",
+			"revision": "e5b2b7c9111590d019a696c7800593f666e1a7f4",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/smartystreets/logging",
+			"repository": "https://github.com/smartystreets/logging",
+			"vcs": "git",
+			"revision": "9abb3b6eb954f7c05a433747e9d383271d83dfca",
 			"branch": "master",
 			"notests": true
 		},
