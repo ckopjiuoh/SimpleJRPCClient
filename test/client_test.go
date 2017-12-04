@@ -1,7 +1,7 @@
 package test
 
 import (
-	. "ClientJSONRPC2/jrpc-client"
+	. "SimpleJRPCClient/jrpc-client"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 )

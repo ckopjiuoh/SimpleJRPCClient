@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"errors"
 
-	. "ClientJSONRPC2/logging"
-	"ClientJSONRPC2/model"
+	. "SimpleJRPCClient/logging"
+	"SimpleJRPCClient/model"
 	"io/ioutil"
 
 	"github.com/motemen/go-loghttp"
