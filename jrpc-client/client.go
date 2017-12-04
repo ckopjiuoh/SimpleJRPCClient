@@ -19,6 +19,7 @@ type JRPCClient struct {
 	Method  string
 	Headers map[string]string
 	Body    model.RPCRequestBody
+	Count int
 
 	httpClient *http.Client
 }
@@ -38,6 +39,7 @@ func NewClient(addr string) *JRPCClient {
 		},
 		Method:  "Post",
 		Headers: map[string]string{"Content-type": "application/json"},
+		Count: 0,
 	}
 }
 
@@ -105,5 +107,6 @@ func (c *JRPCClient) Call() (*model.RPCResponse, error) {
 		Log.Error("RPC response: %q", string(body))
 		return nil, errors.New("Not a RPC Response!")
 	}
+	c.Count++
 	return r, nil
 }

@@ -8,15 +8,15 @@ import (
 
 func TestClient(t *testing.T) {
 	var client = NewClient("https://gurujsonrpc.appspot.com/guru")
-	Convey("Should be POST guru.test method", t, func() {
+	Convey("Given POST guru.test with params [guru]", t, func() {
 		r, _ := client.
 			WithMethod("POST").
 			WithBody("guru.test", []string{"guru"}).
 			Call()
-		Convey("When response result is 2", func() {
+		Convey("The response result should be 2", func() {
 			So(r.Result.(string), ShouldContainSubstring, "Hello guru!")
 		})
-		Convey("When error is nil", func() {
+		Convey("The error should be nil", func() {
 			So(r.Error, ShouldBeNil)
 		})
 	})
