@@ -2,17 +2,23 @@ package test
 
 import (
 	. "SimpleJRPCClient/jrpc-client"
+	"encoding/json"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
-	"encoding/json"
 )
 
+var client = NewClient(
+	"https",
+	"gurujsonrpc.appspot.com",
+	0,
+	"guru").
+	WithPost().
+	WithRPCMethod("guru.test")
+
 func TestClient(t *testing.T) {
-	var client = NewClient("https://gurujsonrpc.appspot.com/guru")
-	Convey("Given POST guru.test with params [guru]", t, func() {
+	Convey("Should be POST guru.test method", t, func() {
 		r, _ := client.
-			WithMethod("POST").
-			WithBody("guru.test", []string{"guru"}).
+			WithRPCParams([]string{"guru"}).
 			Call()
 		Convey("The response result should be 2", func() {
 			var s string

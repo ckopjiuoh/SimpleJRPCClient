@@ -3,13 +3,14 @@ package jrpc_client
 import (
 	"bytes"
 	"encoding/json"
-	"net/http"
 	"errors"
+	"net/http"
 
 	. "SimpleJRPCClient/logging"
 	"SimpleJRPCClient/model"
 	"io/ioutil"
 
+	"fmt"
 	"github.com/motemen/go-loghttp"
 	"github.com/sirupsen/logrus"
 )
@@ -19,15 +20,23 @@ type JRPCClient struct {
 	Method  string
 	Headers map[string]string
 	Body    model.RPCRequestBody
-	Count int
+	Count   int
 
 	httpClient *http.Client
 }
 
-func NewClient(addr string) *JRPCClient {
+func NewClient(protocol string, host string, port int, uri string) *JRPCClient {
 	Log = logrus.New()
 	Log.Formatter = &logrus.JSONFormatter{}
 	Log.SetLevel(logrus.WarnLevel)
+
+	var addr = fmt.Sprintf("%s://%s", protocol, host)
+	if port > 0 {
+		addr = fmt.Sprintf("%s:%d", addr, port)
+	}
+	if uri != "" {
+		addr = fmt.Sprintf("%s/%s", addr, uri)
+	}
 
 	return &JRPCClient{
 		Addr: addr,
@@ -39,6 +48,10 @@ func NewClient(addr string) *JRPCClient {
 		},
 		Method:  "Post",
 		Headers: map[string]string{"Content-type": "application/json"},
+		Body: model.RPCRequestBody{
+			Jsonrpc: "2.0",
+			ID:      1,
+		},
 		Count: 0,
 	}
 }
@@ -49,20 +62,19 @@ func (c *JRPCClient) WithHeaders(m map[string]string) *JRPCClient {
 	return c
 }
 
-func (c *JRPCClient) WithMethod(m string) *JRPCClient {
-	c.Method = m
+func (c *JRPCClient) WithPost() *JRPCClient {
+	c.Method = "Post"
 
 	return c
 }
 
-func (c *JRPCClient) WithBody(method string, params interface{}) *JRPCClient {
-	var m = model.RPCRequestBody{
-		Jsonrpc: "2.0",
-		Method:  method,
-		Params:  params,
-		ID:      1,
-	}
-	c.Body = m
+func (c *JRPCClient) WithRPCMethod(method string) *JRPCClient {
+	c.Body.Method = method
+	return c
+}
+
+func (c *JRPCClient) WithRPCParams(params interface{}) *JRPCClient {
+	c.Body.Params = params
 	return c
 }
 
