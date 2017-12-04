@@ -4,6 +4,7 @@ import (
 	. "SimpleJRPCClient/jrpc-client"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"encoding/json"
 )
 
 func TestClient(t *testing.T) {
@@ -14,7 +15,9 @@ func TestClient(t *testing.T) {
 			WithBody("guru.test", []string{"guru"}).
 			Call()
 		Convey("The response result should be 2", func() {
-			So(r.Result.(string), ShouldContainSubstring, "Hello guru!")
+			var s string
+			json.Unmarshal(*r.Result, &s)
+			So(s, ShouldContainSubstring, "Hello guru!")
 		})
 		Convey("The error should be nil", func() {
 			So(r.Error, ShouldBeNil)
