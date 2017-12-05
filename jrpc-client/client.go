@@ -9,8 +9,8 @@ import (
 	"SimpleJRPCClient/model"
 	"io/ioutil"
 
-	"log"
 	"fmt"
+	"log"
 )
 
 type JRPCClient struct {
@@ -34,11 +34,10 @@ func NewClient(protocol string, host string, port int, uri string) *JRPCClient {
 	}
 
 	return &JRPCClient{
-		Addr: addr,
-		httpClient: &http.Client{
-		},
-		Method:  "Post",
-		Headers: map[string]string{"Content-type": "application/json"},
+		Addr:       addr,
+		httpClient: &http.Client{},
+		Method:     "Post",
+		Headers:    map[string]string{"Content-type": "application/json"},
 		Body: model.RPCRequestBody{
 			Jsonrpc: "2.0",
 			ID:      1,
@@ -59,14 +58,13 @@ func (c *JRPCClient) WithPost() *JRPCClient {
 	return c
 }
 
-func (c *JRPCClient) WithBody(method string, params interface{}) *JRPCClient {
-	var m = model.RPCRequestBody{
-		Jsonrpc: "2.0",
-		Method:  method,
-		Params:  params,
-		ID:      1,
-	}
-	c.Body = m
+func (c *JRPCClient) WithRPCMethod(method string) *JRPCClient {
+	c.Body.Method = method
+	return c
+}
+
+func (c *JRPCClient) WithRPCParams(params interface{}) *JRPCClient {
+	c.Body.Params = params
 	return c
 }
 
