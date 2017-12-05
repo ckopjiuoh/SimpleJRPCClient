@@ -6,12 +6,11 @@ import (
 	"net/http"
 	"errors"
 
-	. "SimpleJRPCClient/logging"
 	"SimpleJRPCClient/model"
 	"io/ioutil"
 
-	"github.com/motemen/go-loghttp"
-	"github.com/sirupsen/logrus"
+	"log"
+	"fmt"
 )
 
 type JRPCClient struct {
@@ -25,17 +24,10 @@ type JRPCClient struct {
 }
 
 func NewClient(addr string) *JRPCClient {
-	Log = logrus.New()
-	Log.Formatter = &logrus.JSONFormatter{}
-	Log.SetLevel(logrus.WarnLevel)
 
 	return &JRPCClient{
 		Addr: addr,
 		httpClient: &http.Client{
-			Transport: &loghttp.Transport{
-				LogRequest:  RPCLogRequest,
-				LogResponse: RPCLogResponse,
-			},
 		},
 		Method:  "Post",
 		Headers: map[string]string{"Content-type": "application/json"},
@@ -79,12 +71,12 @@ func (c *JRPCClient) Call() (*model.RPCResponse, error) {
 	}
 
 	if err != nil {
-		Log.Error(err.Error())
+		log.Fatalln(err.Error())
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		Log.Error(err.Error())
+		log.Fatalln(err.Error())
 	}
 
 	defer resp.Body.Close()
@@ -92,19 +84,14 @@ func (c *JRPCClient) Call() (*model.RPCResponse, error) {
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&r)
 	if err != nil {
-		Log.Error(logrus.Fields{
-			"Respnse decoding error": err.Error(),
-		})
+		log.Fatalln(fmt.Sprintf("Respnse decoding error: %s", err.Error()))
 		if e, ok := err.(*json.SyntaxError); ok {
-			Log.Error(logrus.Fields{
-				"Syntax error": e.Error(),
-				"Offset error": e.Offset,
-			})
+			log.Fatalln(fmt.Sprintf("Syntax error: %s, \n Offset error: %s", e.Error(), e.Offset))
 		}
 
 		body, _ := ioutil.ReadAll(resp.Body)
 
-		Log.Error("RPC response: %q", string(body))
+		log.Fatalln("RPC response: %q", string(body))
 		return nil, errors.New("Not a RPC Response!")
 	}
 	c.Count++
