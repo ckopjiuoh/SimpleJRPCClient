@@ -1,16 +1,17 @@
 package test
 
 import (
+	"SimpleJRPCClient/jrpc-client"
 	"encoding/json"
 	"strings"
 	"testing"
 )
 
-var client = NewClient(
-	"https",
-	"gurujsonrpc.appspot.com",
-	0,
-	"guru").
+var client = jrpc_client.NewClient(
+	"http",
+	"container-1.test.automobile.ru",
+	9990,
+	"rpc/v1.0").
 	WithPost().
 	WithRPCMethod("guru.test")
 

@@ -36,7 +36,7 @@ func NewClient(protocol string, host string, port int, uri string) *JRPCClient {
 	return &JRPCClient{
 		Addr:       addr,
 		httpClient: &http.Client{},
-		Method:     "Post",
+		Method:     "POST",
 		Headers:    map[string]string{"Content-type": "application/json"},
 		Body: model.RPCRequestBody{
 			Jsonrpc: "2.0",
@@ -53,7 +53,7 @@ func (c *JRPCClient) WithHeaders(m map[string]string) *JRPCClient {
 }
 
 func (c *JRPCClient) WithPost() *JRPCClient {
-	c.Method = "Post"
+	c.Method = "POST"
 
 	return c
 }
