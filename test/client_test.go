@@ -3,14 +3,20 @@ package test
 import (
 	. "SimpleJRPCClient/jrpc-client"
 	"testing"
-	"encoding/json"
 )
 
+var client = NewClient(
+	"https",
+	"gurujsonrpc.appspot.com",
+	0,
+	"guru").
+	WithPost().
+	WithRPCMethod("guru.test")
+
 func TestClient(t *testing.T) {
-	var client = NewClient("https://gurujsonrpc.appspot.com/guru")
+
 		r, _ := client.
-			WithMethod("POST").
-			WithBody("guru.test", []string{"guru"}).
+			WithRPCParams([]string{"guru"}).
 			Call()
 			var s string
 			json.Unmarshal(*r.Result, &s)
