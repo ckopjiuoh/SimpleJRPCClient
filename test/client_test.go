@@ -1,7 +1,7 @@
 package test
 
 import (
-	"SimpleJRPCClient/jrpc-client"
+	"github.com/ckopjiuoh/SimpleJRPCClient/jrpc-client"
 	"encoding/json"
 	"strings"
 	"testing"

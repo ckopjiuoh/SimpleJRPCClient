@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net/http"
 
-	"SimpleJRPCClient/model"
+	"github.com/ckopjiuoh/SimpleJRPCClient/model"
 	"io/ioutil"
 
 	"fmt"
