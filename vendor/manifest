@@ -1,0 +1,31 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/mailru/easyjson",
+			"repository": "https://github.com/mailru/easyjson",
+			"vcs": "git",
+			"revision": "32fa128f234d041f196a9f3e0fea5ac9772c08e1",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/pquerna/ffjson/fflib/v1",
+			"repository": "https://github.com/pquerna/ffjson",
+			"vcs": "git",
+			"revision": "d49c2bc1aa135aad0c6f4fc2056623ec78f5d5ac",
+			"branch": "master",
+			"path": "/fflib/v1",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/ugorji/go/codec",
+			"repository": "https://github.com/ugorji/go",
+			"vcs": "git",
+			"revision": "f0aa215a7d653544d39d0e27dfa10fa4b183f397",
+			"branch": "master",
+			"path": "/codec",
+			"notests": true
+		}
+	]
+}

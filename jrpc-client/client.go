@@ -69,12 +69,9 @@ func (c *JRPCClient) WithRPCParams(params interface{}) *JRPCClient {
 }
 
 func (c *JRPCClient) Call() (*model.RPCResponse, error) {
-
+	data, err := c.Body.MarshalJSON()
 	client := c.httpClient
-	body := new(bytes.Buffer)
-	json.NewEncoder(body).Encode(&c.Body)
-
-	req, err := http.NewRequest(c.Method, c.Addr, body)
+	req, err := http.NewRequest(c.Method, c.Addr, bytes.NewReader(data))
 
 	for key, value := range c.Headers {
 		req.Header.Set(key, value)
@@ -90,20 +87,24 @@ func (c *JRPCClient) Call() (*model.RPCResponse, error) {
 	}
 
 	defer resp.Body.Close()
-	r := new(model.RPCResponse)
-	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(&r)
+	r := model.RPCResponse{}
+	data, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(fmt.Sprintf("Respnse decoding error: %s", err.Error()))
-		if e, ok := err.(*json.SyntaxError); ok {
-			log.Fatalln(fmt.Sprintf("Syntax error: %s, \n Offset error: %s", e.Error(), e.Offset))
-		}
-
-		body, _ := ioutil.ReadAll(resp.Body)
-
-		log.Fatalln("RPC response: %q", string(body))
-		return nil, errors.New("Not a RPC Response!")
+		return nil, err
 	}
-	c.Count++
-	return r, nil
+	err = r.UnmarshalJSON(data)
+	if err == nil {
+		return &r, nil
+	}
+
+	log.Fatalln(fmt.Sprintf("Response unmarshalling error: %s", err))
+	if e, ok := err.(*json.SyntaxError); ok {
+		log.Fatalln(fmt.Sprintf("Syntax error: %s, \n Offset error: %s", e.Error(), e.Offset))
+	}
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	log.Fatalln("RPC response: %q", string(body))
+	return nil, errors.New("Not a RPC Response!")
+
 }

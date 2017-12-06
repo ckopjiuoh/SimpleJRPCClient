@@ -1,7 +1,5 @@
 package model
 
-import "encoding/json"
-
 type RPCRequestBody struct {
 	Jsonrpc string      `json:"jsonrpc"`
 	Method  string      `json:"method"`
@@ -11,7 +9,7 @@ type RPCRequestBody struct {
 
 type RPCResponse struct {
 	JSONRPC string           `json:"jsonrpc"`
-	Result  *json.RawMessage `json:"result"`
+	Result  interface{} `json:"result"`
 	Error   *RPCError        `json:"error"`
 	ID      int              `json:"id"`
 }
