@@ -28,7 +28,7 @@ func NewClient(protocol string, host string, port int, uri string) *JRPCClient {
 
 	var addr = fmt.Sprintf("%s", host)
 	if protocol != "" {
-		addr = fmt.Sprintf("%s//%s", protocol, addr)
+		addr = fmt.Sprintf("%s://%s", protocol, addr)
 	}
 	if port > 0 {
 		addr = fmt.Sprintf("%s:%d", addr, port)
