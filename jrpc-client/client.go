@@ -6,8 +6,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/ckopjiuoh/SimpleJRPCClient/model"
 	"io/ioutil"
+
+	"github.com/ckopjiuoh/SimpleJRPCClient/model"
 
 	"fmt"
 	"log"
@@ -25,7 +26,10 @@ type JRPCClient struct {
 
 func NewClient(protocol string, host string, port int, uri string) *JRPCClient {
 
-	var addr = fmt.Sprintf("%s://%s", protocol, host)
+	var addr = fmt.Sprintf("%s", host)
+	if protocol != "" {
+		addr = fmt.Sprintf("%s//%s", protocol, addr)
+	}
 	if port > 0 {
 		addr = fmt.Sprintf("%s:%d", addr, port)
 	}
@@ -69,7 +73,7 @@ func (c *JRPCClient) WithRPCParams(params interface{}) *JRPCClient {
 }
 
 func (c *JRPCClient) Call() (*model.RPCResponse, error) {
-	data, err := c.Body.MarshalJSON()
+	data, err := json.Marshal(c.Body)
 	client := c.httpClient
 	req, err := http.NewRequest(c.Method, c.Addr, bytes.NewReader(data))
 
@@ -92,12 +96,12 @@ func (c *JRPCClient) Call() (*model.RPCResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = r.UnmarshalJSON(data)
+	err = json.Unmarshal(data, &r)
 	if err == nil {
 		return &r, nil
 	}
 
-	log.Fatalln(fmt.Sprintf("Response unmarshalling error: %s", err))
+	log.Fatalln(fmt.Sprintf("Response unmarshalling error: %s\nRequest Address: %s\nResponse body: %s", err, resp.Request.Host, data))
 	if e, ok := err.(*json.SyntaxError); ok {
 		log.Fatalln(fmt.Sprintf("Syntax error: %s, \n Offset error: %s", e.Error(), e.Offset))
 	}

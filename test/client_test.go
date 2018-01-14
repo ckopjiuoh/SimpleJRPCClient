@@ -1,26 +1,40 @@
 package test
 
 import (
-	"github.com/ckopjiuoh/SimpleJRPCClient/jrpc-client"
-	"strings"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"github.com/ckopjiuoh/SimpleJRPCClient/jrpc-client"
+	"github.com/ckopjiuoh/SimpleJRPCClient/model"
 )
 
-var client = jrpc_client.NewClient(
-	"https",
-	"gurujsonrpc.appspot.com",
-	0,
-	"guru").
-	WithPost().
-	WithRPCMethod("guru.test")
-
 func TestClient(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		respBody := model.RPCResponse{
+			JSONRPC: "2.0",
+			Result:  "1",
+			ID:      1,
+			Error: nil,
+		}
 
-	r, _ := client.
-		WithRPCParams([]string{"guru"}).
-		Call()
+		b, _ := json.Marshal(respBody)
+		w.Write(b)
+	}))
 
-	if !strings.Contains(r.Result.(string), "Hello guru") {
+	defer ts.Close()
+
+	var client = jrpc_client.NewClient(
+		"",
+		ts.URL,
+		0,
+		"").
+		WithPost()
+
+	r, _ := client.Call()
+
+	if r.Result.(string) != "1" {
 		t.Error("Not equal!")
 	}
 }

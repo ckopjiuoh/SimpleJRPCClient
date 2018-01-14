@@ -8,10 +8,10 @@ type RPCRequestBody struct {
 }
 
 type RPCResponse struct {
-	JSONRPC string           `json:"jsonrpc"`
+	JSONRPC string      `json:"jsonrpc"`
 	Result  interface{} `json:"result"`
-	Error   *RPCError        `json:"error"`
-	ID      int              `json:"id"`
+	Error   *RPCError   `json:"error"`
+	ID      int         `json:"id"`
 }
 
 type RPCError struct {
