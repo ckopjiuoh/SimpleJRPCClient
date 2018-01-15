@@ -12,7 +12,7 @@ type RPCRequestBody struct {
 type RPCResponse struct {
 	JSONRPC string          `json:"jsonrpc"`
 	Result  json.RawMessage `json:"result"`
-	Error   *RPCError       `json:"error"`
+	Error   json.RawMessage `json:"error"`
 	ID      int             `json:"id"`
 }
 

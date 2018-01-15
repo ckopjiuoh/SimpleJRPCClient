@@ -109,6 +109,6 @@ func (c *JRPCClient) Call() (*model.RPCResponse, error) {
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	log.Fatalln("RPC response: %q", string(body))
-	return nil, errors.New("Not a RPC Response!")
+	return nil, errors.New("not a RPC Response")
 
 }
