@@ -14,7 +14,7 @@ func TestClient(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		respBody := model.RPCResponse{
 			JSONRPC: "2.0",
-			Result:  "1",
+			Result:  json.RawMessage("1"),
 			ID:      1,
 			Error: nil,
 		}
@@ -34,7 +34,7 @@ func TestClient(t *testing.T) {
 
 	r, _ := client.Call()
 
-	if r.Result.(string) != "1" {
+	if string(r.Result) != "1" {
 		t.Error("Not equal!")
 	}
 }
